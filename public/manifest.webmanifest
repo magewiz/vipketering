@@ -1,0 +1,23 @@
+{
+  "name": "VIP Ketering — Кетеринг во Скопје",
+  "short_name": "VIP Ketering",
+  "description": "Професионален кетеринг за свадби, прослави и компании во Скопје. Let us do all the work.",
+  "lang": "mk",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#100F0D",
+  "theme_color": "#100F0D",
+  "categories": ["food", "business", "lifestyle"],
+  "icons": [
+    { "src": "/img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/img/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Мениа", "url": "/menia" },
+    { "name": "Контакт", "url": "/contact" }
+  ]
+}
