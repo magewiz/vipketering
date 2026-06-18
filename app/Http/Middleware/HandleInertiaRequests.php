@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -37,7 +38,21 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            //
+            'settings' => fn () => SiteSetting::current()->only([
+                'brand_name', 'tagline', 'logo',
+                'phone_primary', 'phone_primary_label',
+                'phone_secondary', 'phone_secondary_label',
+                'email', 'address', 'facebook_url', 'instagram_url',
+            ]),
+            'auth' => [
+                'user' => $request->user()
+                    ? $request->user()->only(['id', 'name', 'email'])
+                    : null,
+            ],
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+            ],
         ];
     }
 }

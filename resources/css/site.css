@@ -16,7 +16,8 @@
   --paper:      #FBF7EE;
   --muted:      #8C8576;
   --line:       rgba(194,154,75,.30);
-  --line-soft:  rgba(255,255,255,.10);
+  /* default hairline is dark for the light theme; dark zones override to white below */
+  --line-soft:  rgba(16,15,13,.10);
   --ease:       cubic-bezier(.22,.61,.36,1);
 }
 
@@ -25,8 +26,8 @@ html{scroll-behavior:smooth}
 body{
   margin:0;
   font-family:"Manrope",system-ui,sans-serif;
-  background:var(--ink);
-  color:var(--cream);
+  background:var(--paper);
+  color:#1A1813;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
   overflow-x:hidden;
@@ -48,8 +49,8 @@ body{
   letter-spacing:.34em;text-transform:uppercase;
   color:var(--gold);
 }
-.lead{font-size:clamp(1.02rem,1.4vw,1.18rem);line-height:1.75;color:rgba(248,242,230,.78)}
-.muted{color:var(--muted)}
+.lead{font-size:clamp(1.02rem,1.4vw,1.18rem);line-height:1.75;color:rgba(16,15,13,.72)}
+.muted{color:#6E675A}
 
 /* ---------- decorative bits ---------- */
 .hairline{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
@@ -141,8 +142,8 @@ body{
 .lb-cap:empty{display:none}
 
 /* ---------- forms ---------- */
-.field{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--cream);padding:.9rem 0;font-family:"Manrope",sans-serif;font-size:.95rem;transition:border-color .4s}
-.field::placeholder{color:var(--muted)}
+.field{width:100%;background:transparent;border:0;border-bottom:1px solid rgba(16,15,13,.22);color:var(--ink);padding:.9rem 0;font-family:"Manrope",sans-serif;font-size:.95rem;transition:border-color .4s}
+.field::placeholder{color:#9b9384}
 .field:focus{outline:none;border-color:var(--gold)}
 textarea.field{resize:vertical;min-height:120px}
 
@@ -170,12 +171,36 @@ textarea.field{resize:vertical;min-height:120px}
 .scrollcue span{display:block;width:1px;height:46px;background:linear-gradient(var(--gold),transparent);position:relative;overflow:hidden}
 .scrollcue span:after{content:"";position:absolute;top:0;left:0;width:100%;height:14px;background:var(--gold-bright);animation:scrollcue 2.2s var(--ease) infinite}
 
-/* section bg helpers */
+/* section bg helpers — light editorial theme */
 .bg-paper{background:var(--paper);color:var(--ink)}
 .bg-paper .lead{color:rgba(16,15,13,.7)}
 .bg-paper .muted{color:#7a7363}
 .bg-paper .svc{border-color:rgba(16,15,13,.10)}
 .bg-paper .card{background:#fff;border-color:rgba(16,15,13,.08)}
+
+/* alternate light surface (a touch deeper than paper for rhythm between sections) */
+.bg-surface{background:#F1E9D9;color:var(--ink)}
+.bg-surface .lead{color:rgba(16,15,13,.7)}
+.bg-surface .muted{color:#7a7363}
+.bg-surface .svc{border-color:rgba(16,15,13,.10)}
+.bg-surface .card{background:#fff;border-color:rgba(16,15,13,.08)}
+
+/*
+ * Dark zones — header, mobile menu, footer, hero/CTA photo bands, the contact
+ * aside panel and the gilded menu cards stay dark on the light site. They set an
+ * explicit light text color (so the no-op `text-cream*` utilities inherit light)
+ * and restore the white hairline. Declared AFTER the light-surface rules so a dark
+ * zone nested inside a light section wins on equal specificity.
+ */
+.dark-zone,.nav,.mobile-menu,.bg-ink2,.menu-card{
+  color:var(--cream);
+  --line-soft:rgba(255,255,255,.10);
+}
+.dark-zone .lead,.bg-ink2 .lead,.menu-card .lead{color:rgba(248,242,230,.78)}
+.dark-zone .muted,.bg-ink2 .muted,.menu-card .muted{color:var(--muted)}
+.dark-zone .field,.bg-ink2 .field{color:var(--cream);border-bottom-color:var(--line)}
+.dark-zone .field::placeholder,.bg-ink2 .field::placeholder{color:var(--muted)}
+
 .bg-ink2{background:var(--ink-2)}
 
 /* ---------- icons ---------- */

@@ -1,5 +1,5 @@
 /* VIP Ketering — service worker */
-const CACHE = 'vip-cache-v1';
+const CACHE = 'vip-cache-v2';
 
 self.addEventListener('install', () => self.skipWaiting());
 

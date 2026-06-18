@@ -55,9 +55,18 @@
         var installBtn = document.getElementById('pwa-install-btn');
         var dismissBtn = document.getElementById('pwa-dismiss-btn');
 
+        // Only offer the install prompt on phones/tablets — not on desktop.
+        function isMobileOrTablet() {
+            var coarse = window.matchMedia('(any-pointer: coarse)').matches;
+            var touch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+            var narrow = window.matchMedia('(max-width: 1024px)').matches;
+            return (coarse || touch) && narrow;
+        }
+
         function show() {
             if (localStorage.getItem('pwa-dismissed') === '1') return;
             if (window.matchMedia('(display-mode: standalone)').matches) return; // already installed
+            if (!isMobileOrTablet()) return; // mobile + tablet only
             banner.hidden = false;
             requestAnimationFrame(function () { banner.classList.add('show'); });
         }

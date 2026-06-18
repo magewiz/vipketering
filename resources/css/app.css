@@ -7,3 +7,21 @@
 
 /* VIP Ketering design system — tokens, components, animations */
 @import './site.css';
+
+/*
+ * Form controls default to dark text. The public dark theme sets the page
+ * color to light cream on <body>, and Tailwind's preflight makes inputs
+ * inherit it — which renders as unreadable light-on-white text in the admin
+ * panel. The public contact form's inputs use the `.field` class, which wins
+ * by specificity and keeps its own light color, so only the otherwise-unstyled
+ * admin form controls are affected here.
+ */
+input:not(.field),
+textarea:not(.field),
+select {
+  color: #171717; /* neutral-900 */
+}
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af; /* neutral-400 */
+}
