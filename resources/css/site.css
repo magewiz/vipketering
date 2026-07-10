@@ -78,6 +78,9 @@ body{
 .btn-gold:hover{background:var(--gold-bright);transform:translateY(-2px);box-shadow:0 14px 40px -12px rgba(194,154,75,.6)}
 .btn-ghost{border-color:var(--line);color:var(--cream);background:transparent}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold-bright);background:rgba(194,154,75,.06)}
+/* on light sections the cream ghost button is invisible — switch to ink */
+.bg-paper .btn-ghost,.bg-surface .btn-ghost{border-color:rgba(16,15,13,.4);color:var(--ink)}
+.bg-paper .btn-ghost:hover,.bg-surface .btn-ghost:hover{border-color:var(--gold-deep);color:var(--gold-deep);background:rgba(194,154,75,.10)}
 .btn-ink{background:var(--ink);color:var(--cream)}
 .btn-ink:hover{background:#000;transform:translateY(-2px)}
 .btn .arr{transition:transform .4s var(--ease)}

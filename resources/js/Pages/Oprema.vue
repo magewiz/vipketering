@@ -18,11 +18,13 @@ const phones = computed(() => [settings.value.phone_primary, settings.value.phon
 </script>
 
 <template>
-  <Head :title="page.meta_title || 'Опрема'" />
+  <Head :title="page.meta_title || 'Опрема'">
+    <link rel="preload" as="image" :href="c.hero.image" fetchpriority="high" />
+  </Head>
   <Layout>
     <section class="dark-zone relative pt-[78px] overflow-hidden">
       <div class="relative h-[48vh] min-h-[380px] lg:h-[298px] lg:min-h-[298px] flex items-end">
-        <img :src="c.hero.image" alt="" class="absolute inset-0 w-full h-full object-cover kenburns">
+        <img :src="c.hero.image" alt="" fetchpriority="high" class="absolute inset-0 w-full h-full object-cover kenburns">
         <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(16,15,13,.62),rgba(16,15,13,.42) 45%,var(--ink))"></div>
         <div class="relative maxw w-full px-5 md:px-10 pb-12">
           <nav class="text-xs tracking-[.2em] uppercase text-cream/60 mb-4 hero-anim" data-d="1"><Link href="/" class="hover:text-[var(--gold-bright)]">Почетна</Link> <span class="text-[var(--gold)] mx-2">/</span> {{ c.hero.title }}</nav>
@@ -89,7 +91,7 @@ const phones = computed(() => [settings.value.phone_primary, settings.value.phon
                 </div>
               </div>
             </div>
-            <img v-if="partners.image" :src="partners.image" alt="" class="w-full h-44 object-cover mt-8">
+            <img v-if="partners.image" :src="partners.image" alt="" loading="lazy" decoding="async" class="w-full h-44 object-cover mt-8">
           </div>
         </div>
       </div>
@@ -104,14 +106,14 @@ const phones = computed(() => [settings.value.phone_primary, settings.value.phon
           <p class="lead mt-4 reveal" data-d="2">{{ c.gallery.lead }}</p>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-          <div v-for="(g, i) in gallery" :key="i" class="gal-item aspect-[4/5] reveal" :data-d="(i % 4)" :data-lb="g.src"><img :src="g.src" :alt="g.alt || ''"><div v-if="g.caption" class="gal-cap"><span class="text-sm text-cream font-medium">{{ g.caption }}</span></div></div>
+          <div v-for="(g, i) in gallery" :key="i" class="gal-item aspect-[4/5] reveal" :data-d="(i % 4)" :data-lb="g.src"><img :src="g.src" :alt="g.alt || ''" loading="lazy" decoding="async"><div v-if="g.caption" class="gal-cap"><span class="text-sm text-cream font-medium">{{ g.caption }}</span></div></div>
         </div>
       </div>
     </section>
 
 
     <section class="dark-zone relative py-24 md:py-32 overflow-hidden">
-      <img :src="c.cta.image" alt="" class="absolute inset-0 w-full h-full object-cover">
+      <img :src="c.cta.image" alt="" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover">
       <div class="absolute inset-0" style="background:linear-gradient(180deg,var(--ink),rgba(16,15,13,.8),var(--ink))"></div>
       <div class="relative maxw px-5 md:px-10 text-center">
         <h2 class="font-display d1 reveal" v-html="c.cta.heading"></h2>

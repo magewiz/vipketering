@@ -19,11 +19,13 @@ const primaryPhone = computed(() => settings.value.phone_primary);
 </script>
 
 <template>
-  <Head :title="page.meta_title || 'Мениа'" />
+  <Head :title="page.meta_title || 'Мениа'">
+    <link rel="preload" as="image" :href="c.hero.image" fetchpriority="high" />
+  </Head>
   <Layout>
     <section class="dark-zone relative pt-[78px] overflow-hidden">
       <div class="relative h-[52vh] min-h-[400px] lg:h-[262px] lg:min-h-[262px] flex items-end">
-        <img :src="c.hero.image" alt="" class="absolute inset-0 w-full h-full object-cover kenburns">
+        <img :src="c.hero.image" alt="" fetchpriority="high" class="absolute inset-0 w-full h-full object-cover kenburns">
         <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(16,15,13,.6),rgba(16,15,13,.4) 45%,var(--ink))"></div>
         <div class="relative maxw w-full px-5 md:px-10 pb-12">
           <nav class="text-xs tracking-[.2em] uppercase text-cream/60 mb-4 hero-anim" data-d="1"><Link href="/" class="hover:text-[var(--gold-bright)]">Почетна</Link> <span class="text-[var(--gold)] mx-2">/</span> {{ c.hero.title }}</nav>
@@ -65,14 +67,14 @@ const primaryPhone = computed(() => settings.value.phone_primary);
           <p class="lead mt-4 reveal" data-d="2">{{ c.gallery.lead }}</p>
         </div>
         <div class="columns-2 md:columns-3 lg:columns-4 gap-3 md:gap-4 [&>*]:mb-3 md:[&>*]:mb-4">
-          <div v-for="(g, i) in gallery" :key="i" class="gal-item reveal" :data-d="(i % 4)" :data-lb="g.src"><img :src="g.src" :alt="g.alt || ''" :class="aspectClass(g.aspect)"></div>
+          <div v-for="(g, i) in gallery" :key="i" class="gal-item reveal" :data-d="(i % 4)" :data-lb="g.src"><img :src="g.src" :alt="g.alt || ''" loading="lazy" decoding="async" :class="aspectClass(g.aspect)"></div>
         </div>
       </div>
     </section>
 
 
     <section class="dark-zone relative py-24 md:py-32 overflow-hidden">
-      <img :src="c.cta.image" alt="" class="absolute inset-0 w-full h-full object-cover">
+      <img :src="c.cta.image" alt="" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover">
       <div class="absolute inset-0" style="background:linear-gradient(180deg,var(--ink),rgba(16,15,13,.8),var(--ink))"></div>
       <div class="relative maxw px-5 md:px-10 text-center">
         <h2 class="font-display d1 reveal" v-html="c.cta.heading"></h2>

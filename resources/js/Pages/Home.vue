@@ -16,11 +16,13 @@ const pad = (i) => String(i + 1).padStart(2, '0');
 </script>
 
 <template>
-  <Head :title="page.meta_title || ''" />
+  <Head :title="page.meta_title || ''">
+    <link rel="preload" as="image" :href="c.hero.image" fetchpriority="high" />
+  </Head>
   <Layout>
     <section class="dark-zone relative min-h-screen flex items-end overflow-hidden">
       <div class="absolute inset-0">
-        <img :src="c.hero.image" alt="" class="w-full h-full object-cover kenburns">
+        <img :src="c.hero.image" alt="" fetchpriority="high" class="w-full h-full object-cover kenburns">
         <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(16,15,13,.72) 0%,rgba(16,15,13,.30) 40%,rgba(16,15,13,.55) 75%,var(--ink) 100%)"></div>
         <div class="absolute inset-0" style="background:radial-gradient(120% 80% at 0% 100%,rgba(16,15,13,.85),transparent 60%)"></div>
       </div>
@@ -52,7 +54,7 @@ const pad = (i) => String(i + 1).padStart(2, '0');
       <div class="maxw px-5 md:px-10 grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
         <div class="relative reveal">
           <div class="absolute -top-5 -left-5 w-24 h-24 border border-[var(--gold)] opacity-40 hidden md:block"></div>
-          <img :src="c.welcome.image" alt="VIP Ketering буфет" class="relative w-full aspect-[4/5] object-cover shadow-2xl">
+          <img :src="c.welcome.image" alt="VIP Ketering буфет" loading="lazy" decoding="async" class="relative w-full aspect-[4/5] object-cover shadow-2xl">
           <div class="dark-zone absolute -bottom-6 -right-4 md:-right-8 bg-[var(--ink)] px-7 py-5 shadow-xl">
             <span class="font-display text-4xl text-[var(--gold-bright)] leading-none">{{ c.welcome.badge_number }}</span>
             <span class="block text-[.7rem] tracking-[.22em] uppercase mt-1 text-cream/70">{{ c.welcome.badge_label }}</span>
@@ -115,9 +117,9 @@ const pad = (i) => String(i + 1).padStart(2, '0');
           </div>
         </div>
         <div class="order-1 lg:order-2 grid grid-cols-2 gap-4 reveal" data-d="2">
-          <img v-if="c.why.images[0]" :src="c.why.images[0]" alt="" class="w-full aspect-[3/4] object-cover translate-y-6">
-          <img v-if="c.why.images[1]" :src="c.why.images[1]" alt="" class="w-full aspect-[3/4] object-cover">
-          <img v-if="c.why.images[2]" :src="c.why.images[2]" alt="" class="w-full aspect-[4/3] object-cover col-span-2">
+          <img v-if="c.why.images[0]" :src="c.why.images[0]" alt="" loading="lazy" decoding="async" class="w-full aspect-[3/4] object-cover translate-y-6">
+          <img v-if="c.why.images[1]" :src="c.why.images[1]" alt="" loading="lazy" decoding="async" class="w-full aspect-[3/4] object-cover">
+          <img v-if="c.why.images[2]" :src="c.why.images[2]" alt="" loading="lazy" decoding="async" class="w-full aspect-[4/3] object-cover col-span-2">
         </div>
       </div>
     </section>
@@ -133,14 +135,14 @@ const pad = (i) => String(i + 1).padStart(2, '0');
           <Link href="/menia" class="btn btn-ghost self-start reveal" data-d="2">{{ c.gallery.link_label }} <span class="arr">→</span></Link>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-          <div v-for="(g, i) in gallery" :key="i" class="gal-item reveal" :class="[aspectClass(g.aspect), { 'md:mt-8': i % 2 === 1 }]" :data-d="i + 1"><img :src="g.src" :alt="g.alt || ''"></div>
+          <div v-for="(g, i) in gallery" :key="i" class="gal-item reveal" :class="[aspectClass(g.aspect), { 'md:mt-8': i % 2 === 1 }]" :data-d="i + 1"><img :src="g.src" :alt="g.alt || ''" loading="lazy" decoding="async"></div>
         </div>
       </div>
     </section>
 
 
     <section class="dark-zone relative py-24 md:py-36 overflow-hidden">
-      <img :src="c.cta.image" alt="" class="absolute inset-0 w-full h-full object-cover">
+      <img :src="c.cta.image" alt="" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover">
       <div class="absolute inset-0" style="background:linear-gradient(180deg,var(--ink),rgba(16,15,13,.78),var(--ink))"></div>
       <div class="relative maxw px-5 md:px-10 text-center">
         <span class="eyebrow reveal">{{ c.cta.eyebrow }}</span>
