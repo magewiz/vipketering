@@ -17,10 +17,14 @@ const navLogo = computed(() => {
     return logo === '/img/logo-vip.png' ? '/img/logo-vip-96.png' : logo;
 });
 
-const scrolled = ref(false);
+// Solid-header state without reading window.scrollY (scroll handlers that
+// query geometry force synchronous reflows): a 40px sentinel at the top of
+// the document is watched with an IntersectionObserver instead.
+const sentinel = ref(null);
+const pastTop = ref(false);
+const scrolled = computed(() => alwaysSolid.value || pastTop.value);
 const menuOpen = ref(false);
-
-const onScroll = () => { scrolled.value = alwaysSolid.value || window.scrollY > 40; };
+let sentinelObserver;
 
 const nav = [
     { label: 'Почетна', href: '/' },
@@ -34,17 +38,18 @@ function openMenu() { menuOpen.value = true; document.body.style.overflow = 'hid
 function closeMenu() { menuOpen.value = false; document.body.style.overflow = ''; }
 
 onMounted(() => {
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
+    sentinelObserver = new IntersectionObserver(([e]) => { pastTop.value = !e.isIntersecting; });
+    sentinelObserver.observe(sentinel.value);
     nextTick(() => initEffects(document));
 });
-onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
-watch(path, () => { closeMenu(); onScroll(); });
+onBeforeUnmount(() => sentinelObserver?.disconnect());
+watch(path, closeMenu);
 
 const year = new Date().getFullYear();
 </script>
 
 <template>
+    <span ref="sentinel" aria-hidden="true" class="absolute top-0 left-0 w-px h-10 pointer-events-none"></span>
     <header class="nav" :class="{ scrolled: scrolled }">
         <div class="maxw px-5 md:px-10 h-[78px] flex items-center justify-between">
             <Link href="/" class="flex items-center gap-3">
