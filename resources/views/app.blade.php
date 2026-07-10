@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title inertia>{{ config('app.name', 'VIP Ketering') }}</title>
-    <meta name="description" content="VIP Ketering — професионален кетеринг за свадби, прослави и компании во Скопје. Let us do all the work.">
+    <meta name="description" content="{{ $metaDescription ?? 'VIP Ketering — професионален кетеринг за свадби, прослави и компании во Скопје. Let us do all the work.' }}">
+    <link rel="canonical" href="{{ url()->current() }}">
 
     {{-- PWA --}}
     <link rel="manifest" href="/manifest.webmanifest">
@@ -24,6 +25,10 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @inertiaHead
+
+    @foreach ($jsonLd ?? [] as $schema)
+    <script type="application/ld+json">{!! json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+    @endforeach
 </head>
 <body class="grain">
     @inertia

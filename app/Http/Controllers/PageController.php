@@ -6,7 +6,9 @@ use App\Models\EquipmentItem;
 use App\Models\GalleryImage;
 use App\Models\Menu;
 use App\Models\Page;
+use App\Models\SiteSetting;
 use App\Support\ImageOptimizer;
+use App\Support\StructuredData;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -14,45 +16,61 @@ class PageController extends Controller
 {
     public function home(): Response
     {
-        return Inertia::render('Home', [
-            'page' => $this->page('home'),
+        $page = $this->page('home');
+
+        return $this->withSeo(Inertia::render('Home', [
+            'page' => $page,
             'gallery' => $this->gallery('home-food'),
-        ]);
+        ]), $page, breadcrumbs: false);
     }
 
     public function about(): Response
     {
-        return Inertia::render('About', [
-            'page' => $this->page('about'),
-        ]);
+        $page = $this->page('about');
+
+        return $this->withSeo(Inertia::render('About', [
+            'page' => $page,
+        ]), $page);
     }
 
     public function menia(): Response
     {
-        return Inertia::render('Menia', [
-            'page' => $this->page('menia'),
-            'menus' => Menu::where('is_published', true)
-                ->orderBy('sort_order')->get()
-                ->groupBy('group'),
+        $page = $this->page('menia');
+        $menus = Menu::where('is_published', true)
+            ->orderBy('sort_order')->get();
+
+        return $this->withSeo(Inertia::render('Menia', [
+            'page' => $page,
+            'menus' => $menus->groupBy('group'),
             'gallery' => $this->gallery('menia'),
+        ]), $page, [
+            StructuredData::menuList(
+                $menus,
+                route('menia'),
+                data_get($page->content, 'hero.image') ?: SiteSetting::current()->logo,
+            ),
         ]);
     }
 
     public function oprema(): Response
     {
-        return Inertia::render('Oprema', [
-            'page' => $this->page('oprema'),
+        $page = $this->page('oprema');
+
+        return $this->withSeo(Inertia::render('Oprema', [
+            'page' => $page,
             'equipment' => EquipmentItem::where('is_published', true)
                 ->orderBy('sort_order')->get(),
             'gallery' => $this->gallery('oprema'),
-        ]);
+        ]), $page);
     }
 
     public function contact(): Response
     {
-        return Inertia::render('Contact', [
-            'page' => $this->page('contact'),
-        ]);
+        $page = $this->page('contact');
+
+        return $this->withSeo(Inertia::render('Contact', [
+            'page' => $page,
+        ]), $page);
     }
 
     private function page(string $slug): Page
@@ -76,5 +94,26 @@ class PageController extends Controller
             ->where('is_published', true)
             ->orderBy('sort_order')
             ->get(['src', 'alt', 'caption', 'aspect']);
+    }
+
+    /**
+     * Attach the SEO view data (meta description + JSON-LD blocks) that
+     * app.blade.php renders on full page loads.
+     */
+    private function withSeo(Response $response, Page $page, array $extraSchemas = [], bool $breadcrumbs = true): Response
+    {
+        $jsonLd = [StructuredData::business(SiteSetting::current())];
+
+        if ($breadcrumbs) {
+            $jsonLd[] = StructuredData::breadcrumbs([
+                ['name' => 'Почетна', 'url' => route('home')],
+                ['name' => $page->title, 'url' => url()->current()],
+            ]);
+        }
+
+        return $response->withViewData([
+            'metaDescription' => $page->meta_description,
+            'jsonLd' => array_merge($jsonLd, $extraSchemas),
+        ]);
     }
 }
