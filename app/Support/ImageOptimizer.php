@@ -18,7 +18,12 @@ class ImageOptimizer
 
     public const JPEG_QUALITY = 80;
 
-    public const WEBP_QUALITY = 78;
+    public const WEBP_QUALITY = 72;
+
+    /** Images at least this wide also get a mobile "@960" variant for srcset. */
+    public const VARIANT_THRESHOLD = 1200;
+
+    public const VARIANT_WIDTH = 960;
 
     /**
      * Optimize a single image in place. Returns false for formats we leave
@@ -62,6 +67,8 @@ class ImageOptimizer
                 $image->writeImage($path);
             }
 
+            $this->writeMobileVariant($image, $path, $ext);
+
             $image->clear();
 
             $this->losslessPass($path, $ext);
@@ -76,6 +83,29 @@ class ImageOptimizer
     }
 
     /**
+     * srcset value for an image URL path (e.g. "/img/hero-1.jpg"), offering
+     * the "@960" mobile variant when it exists on disk. Null when there is
+     * no variant — callers then simply omit the srcset attribute.
+     */
+    public static function srcset(?string $src): ?string
+    {
+        if (! $src || ! str_starts_with($src, '/')) {
+            return null;
+        }
+
+        $variant = preg_replace('/\.(jpe?g|png)$/i', '@'.self::VARIANT_WIDTH.'.$1', $src);
+        $file = public_path(ltrim($src, '/'));
+
+        if ($variant === $src || ! is_file($file) || ! is_file(public_path(ltrim($variant, '/')))) {
+            return null;
+        }
+
+        [$width] = getimagesize($file);
+
+        return sprintf('%s %dw, %s %dw', $variant, self::VARIANT_WIDTH, $src, $width);
+    }
+
+    /**
      * An image is considered optimized when its .webp sibling exists and is
      * at least as new as the source — replacing the source resets this.
      */
@@ -84,6 +114,37 @@ class ImageOptimizer
         $webp = $path.'.webp';
 
         return is_file($webp) && filemtime($webp) >= filemtime($path);
+    }
+
+    /** Downscaled copy for phones, offered to browsers via srcset (see srcset()). */
+    private function writeMobileVariant(Imagick $image, string $path, string $ext): void
+    {
+        // Skip images that already are variants, and anything not clearly larger.
+        if (str_contains(basename($path), '@'.self::VARIANT_WIDTH.'.')
+            || $image->getImageWidth() < self::VARIANT_THRESHOLD) {
+            return;
+        }
+
+        $variantPath = preg_replace('/\.(jpe?g|png)$/i', '@'.self::VARIANT_WIDTH.'.$1', $path);
+
+        $variant = clone $image;
+        $variant->resizeImage(self::VARIANT_WIDTH, 0, Imagick::FILTER_LANCZOS, 1);
+
+        $webp = clone $variant;
+        $webp->setImageFormat('webp');
+        $webp->setImageCompressionQuality(self::WEBP_QUALITY);
+        $webp->writeImage($variantPath.'.webp');
+        $webp->clear();
+
+        if ($ext !== 'png') {
+            $variant->setImageCompressionQuality(self::JPEG_QUALITY);
+            $variant->setInterlaceScheme(Imagick::INTERLACE_PLANE);
+        }
+        $variant->writeImage($variantPath);
+        $variant->clear();
+
+        $this->losslessPass($variantPath, $ext);
+        touch($variantPath.'.webp');
     }
 
     /**

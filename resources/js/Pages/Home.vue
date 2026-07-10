@@ -17,12 +17,12 @@ const pad = (i) => String(i + 1).padStart(2, '0');
 
 <template>
   <Head :title="page.meta_title || ''">
-    <link rel="preload" as="image" :href="c.hero.image" fetchpriority="high" />
+    <link rel="preload" as="image" :href="c.hero.image" :imagesrcset="c.hero.image_srcset" :imagesizes="c.hero.image_srcset ? '100vw' : null" fetchpriority="high" />
   </Head>
   <Layout>
     <section class="dark-zone relative min-h-screen flex items-end overflow-hidden">
       <div class="absolute inset-0">
-        <img :src="c.hero.image" alt="" fetchpriority="high" class="w-full h-full object-cover kenburns">
+        <img :src="c.hero.image" :srcset="c.hero.image_srcset" :sizes="c.hero.image_srcset ? '100vw' : null" alt="" fetchpriority="high" class="w-full h-full object-cover kenburns">
         <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(16,15,13,.72) 0%,rgba(16,15,13,.30) 40%,rgba(16,15,13,.55) 75%,var(--ink) 100%)"></div>
         <div class="absolute inset-0" style="background:radial-gradient(120% 80% at 0% 100%,rgba(16,15,13,.85),transparent 60%)"></div>
       </div>

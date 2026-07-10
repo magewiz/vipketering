@@ -19,12 +19,12 @@ const phones = computed(() => [settings.value.phone_primary, settings.value.phon
 
 <template>
   <Head :title="page.meta_title || 'Опрема'">
-    <link rel="preload" as="image" :href="c.hero.image" fetchpriority="high" />
+    <link rel="preload" as="image" :href="c.hero.image" :imagesrcset="c.hero.image_srcset" :imagesizes="c.hero.image_srcset ? '100vw' : null" fetchpriority="high" />
   </Head>
   <Layout>
     <section class="dark-zone relative pt-[78px] overflow-hidden">
       <div class="relative h-[48vh] min-h-[380px] lg:h-[298px] lg:min-h-[298px] flex items-end">
-        <img :src="c.hero.image" alt="" fetchpriority="high" class="absolute inset-0 w-full h-full object-cover kenburns">
+        <img :src="c.hero.image" :srcset="c.hero.image_srcset" :sizes="c.hero.image_srcset ? '100vw' : null" alt="" fetchpriority="high" class="absolute inset-0 w-full h-full object-cover kenburns">
         <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(16,15,13,.62),rgba(16,15,13,.42) 45%,var(--ink))"></div>
         <div class="relative maxw w-full px-5 md:px-10 pb-12">
           <nav class="text-xs tracking-[.2em] uppercase text-cream/60 mb-4 hero-anim" data-d="1"><Link href="/" class="hover:text-[var(--gold-bright)]">Почетна</Link> <span class="text-[var(--gold)] mx-2">/</span> {{ c.hero.title }}</nav>

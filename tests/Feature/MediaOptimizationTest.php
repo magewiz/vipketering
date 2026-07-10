@@ -66,6 +66,11 @@ class MediaOptimizationTest extends TestCase
         $this->assertLessThanOrEqual(ImageOptimizer::MAX_DIMENSION, $width);
         $this->assertFileExists("$dir/wide.jpg.webp");
 
+        // Wide images also get a mobile srcset variant (+ webp sibling).
+        $this->assertFileExists("$dir/wide@960.jpg");
+        $this->assertFileExists("$dir/wide@960.jpg.webp");
+        $this->assertSame(ImageOptimizer::VARIANT_WIDTH, getimagesize("$dir/wide@960.jpg")[0]);
+
         // Second run must skip the already-optimized file (webp sibling is newer).
         $mtime = filemtime("$dir/wide.jpg");
         $this->artisan('images:optimize', ['--path' => $dir])->assertSuccessful();

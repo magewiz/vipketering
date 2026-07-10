@@ -6,6 +6,7 @@ use App\Models\EquipmentItem;
 use App\Models\GalleryImage;
 use App\Models\Menu;
 use App\Models\Page;
+use App\Support\ImageOptimizer;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -56,7 +57,17 @@ class PageController extends Controller
 
     private function page(string $slug): Page
     {
-        return Page::where('slug', $slug)->firstOrFail();
+        $page = Page::where('slug', $slug)->firstOrFail();
+
+        // Offer the mobile "@960" hero variant via srcset when it exists on
+        // disk (images:optimize / upload generates it for wide images).
+        $content = $page->content;
+        if ($srcset = ImageOptimizer::srcset($content['hero']['image'] ?? null)) {
+            $content['hero']['image_srcset'] = $srcset;
+            $page->content = $content;
+        }
+
+        return $page;
     }
 
     private function gallery(string $collection)
