@@ -22,6 +22,12 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Администратор', 'password' => Hash::make('vipketering2026')],
         );
 
+        // Additional admin — log in with username "an" or this e-mail.
+        User::updateOrCreate(
+            ['email' => 'an@vipketering.mk'],
+            ['name' => 'an', 'password' => Hash::make('123qwe!@#')],
+        );
+
         $this->call([
             SettingsSeeder::class,
             PagesSeeder::class,

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\ContactSubmissionController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EquipmentController;
 use App\Http\Controllers\Admin\GalleryController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +23,7 @@ Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/menia', [PageController::class, 'menia'])->name('menia');
 Route::get('/oprema', [PageController::class, 'oprema'])->name('oprema');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +61,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('gallery', [GalleryController::class, 'store'])->name('gallery.store');
         Route::put('gallery/{image}', [GalleryController::class, 'update'])->name('gallery.update');
         Route::delete('gallery/{image}', [GalleryController::class, 'destroy'])->name('gallery.destroy');
+
+        Route::get('contacts', [ContactSubmissionController::class, 'index'])->name('contacts.index');
+        Route::patch('contacts/{contact}', [ContactSubmissionController::class, 'update'])->name('contacts.update');
+        Route::delete('contacts/{contact}', [ContactSubmissionController::class, 'destroy'])->name('contacts.destroy');
 
         Route::post('media', [MediaController::class, 'store'])->name('media.store');
     });

@@ -2,7 +2,7 @@
 import { Head, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
-  email: '',
+  login: '',
   password: '',
   remember: false,
 });
@@ -26,10 +26,10 @@ function submit() {
 
       <form @submit.prevent="submit" class="bg-white rounded-xl shadow-xl p-6 space-y-4">
         <div>
-          <label class="block text-sm font-medium text-neutral-700 mb-1.5">Е-пошта</label>
-          <input v-model="form.email" type="email" autofocus required
+          <label class="block text-sm font-medium text-neutral-700 mb-1.5">Корисничко име или е-пошта</label>
+          <input v-model="form.login" type="text" autofocus required autocomplete="username"
                  class="w-full px-3 py-2 rounded-md border border-neutral-300 outline-none focus:border-neutral-900">
-          <p v-if="form.errors.email" class="text-xs text-red-600 mt-1">{{ form.errors.email }}</p>
+          <p v-if="form.errors.login" class="text-xs text-red-600 mt-1">{{ form.errors.login }}</p>
         </div>
         <div>
           <label class="block text-sm font-medium text-neutral-700 mb-1.5">Лозинка</label>

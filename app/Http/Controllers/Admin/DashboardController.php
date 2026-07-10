@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ContactSubmission;
 use App\Models\EquipmentItem;
 use App\Models\GalleryImage;
 use App\Models\Menu;
@@ -20,6 +21,8 @@ class DashboardController extends Controller
                 'menus' => Menu::count(),
                 'equipment' => EquipmentItem::count(),
                 'images' => GalleryImage::count(),
+                'messages' => ContactSubmission::count(),
+                'unread' => ContactSubmission::where('is_read', false)->count(),
             ],
             'pages' => Page::orderBy('id')->get(['slug', 'title']),
         ]);

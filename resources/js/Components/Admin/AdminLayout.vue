@@ -15,6 +15,7 @@ const nav = [
     { label: 'Мениа', href: '/admin/menus', icon: '☰' },
     { label: 'Опрема', href: '/admin/equipment', icon: '⚙' },
     { label: 'Галерии', href: '/admin/gallery', icon: '▥' },
+    { label: 'Пораки', href: '/admin/contacts', icon: '✉' },
     { label: 'Поставки', href: '/admin/settings', icon: '✎' },
 ];
 

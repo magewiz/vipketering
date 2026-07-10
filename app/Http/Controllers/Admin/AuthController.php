@@ -19,14 +19,22 @@ class AuthController extends Controller
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'login' => ['required', 'string'],
             'password' => ['required'],
         ]);
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        // Allow logging in with either an e-mail address or a username (the user's name).
+        $field = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+
+        $attempt = [
+            $field => $credentials['login'],
+            'password' => $credentials['password'],
+        ];
+
+        if (! Auth::attempt($attempt, $request->boolean('remember'))) {
             return back()->withErrors([
-                'email' => 'Неточна е-пошта или лозинка.',
-            ])->onlyInput('email');
+                'login' => 'Неточно корисничко име/е-пошта или лозинка.',
+            ])->onlyInput('login');
         }
 
         $request->session()->regenerate();

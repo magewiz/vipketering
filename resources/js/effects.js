@@ -76,16 +76,4 @@ export function initEffects(root = document) {
         });
     });
 
-    // contact form (demo)
-    const form = root.querySelector('[data-form]');
-    if (form) {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const b = form.querySelector('[type=submit]');
-            const label = b.textContent;
-            b.textContent = 'Испратено ✓'; b.style.background = 'var(--gold-bright)';
-            form.reset();
-            setTimeout(() => { b.textContent = label; b.style.background = ''; }, 2600);
-        });
-    }
 }

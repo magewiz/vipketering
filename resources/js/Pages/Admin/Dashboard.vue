@@ -12,6 +12,7 @@ const cards = [
   { key: 'menus', label: 'Мениа', href: '/admin/menus' },
   { key: 'equipment', label: 'Опрема', href: '/admin/equipment' },
   { key: 'images', label: 'Слики во галерии', href: '/admin/gallery' },
+  { key: 'messages', label: 'Пораки', href: '/admin/contacts' },
 ];
 </script>
 

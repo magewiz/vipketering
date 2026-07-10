@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from 'vue';
-import { Head, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import Layout from '../Components/Layout.vue';
 import { telHref } from '../lib/format';
 
@@ -14,6 +14,29 @@ const contactPhones = computed(() => [
   { number: settings.value.phone_primary, label: settings.value.phone_primary_label },
   { number: settings.value.phone_secondary, label: settings.value.phone_secondary_label },
 ].filter((p) => p.number));
+
+const sent = ref(false);
+const form = useForm({
+  name: '',
+  phone: '',
+  email: '',
+  event_type: '',
+  event_date: '',
+  guests: '',
+  message: '',
+  website: '', // honeypot — must stay empty
+});
+
+function submitContact() {
+  form.post('/contact', {
+    preserveScroll: true,
+    onSuccess: () => {
+      form.reset();
+      sent.value = true;
+      setTimeout(() => (sent.value = false), 6000);
+    },
+  });
+}
 </script>
 
 <template>
@@ -39,26 +62,34 @@ const contactPhones = computed(() => [
           <span class="eyebrow">{{ c.form.eyebrow }}</span>
           <h2 class="font-display d2 mt-4">{{ c.form.heading }}</h2>
           <p class="lead mt-4">{{ c.form.lead }}</p>
-          <form data-form class="mt-9 space-y-7">
-            <div class="grid sm:grid-cols-2 gap-7">
-              <div><label class="eyebrow text-[.62rem] block mb-2">Име и презиме</label><input class="field" type="text" placeholder="Вашето име" required></div>
-              <div><label class="eyebrow text-[.62rem] block mb-2">Телефон</label><input class="field" type="tel" placeholder="07X XXX XXX" required></div>
+          <form @submit.prevent="submitContact" class="mt-9 space-y-7" autocomplete="off" novalidate>
+            <!-- Honeypot: hidden from humans, ignored by screen readers; bots that fill it are dropped server-side -->
+            <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">
+              <label>Веб-страница<input v-model="form.website" type="text" tabindex="-1" autocomplete="off"></label>
             </div>
             <div class="grid sm:grid-cols-2 gap-7">
-              <div><label class="eyebrow text-[.62rem] block mb-2">Е-пошта</label><input class="field" type="email" placeholder="email@пример.com"></div>
+              <div><label class="eyebrow text-[.62rem] block mb-2">Име и презиме</label><input v-model="form.name" class="field" type="text" placeholder="Вашето име" autocomplete="off" required><p v-if="form.errors.name" class="text-[var(--gold-bright)] text-xs mt-1.5">{{ form.errors.name }}</p></div>
+              <div><label class="eyebrow text-[.62rem] block mb-2">Телефон</label><input v-model="form.phone" class="field" type="tel" placeholder="07X XXX XXX" autocomplete="off" required><p v-if="form.errors.phone" class="text-[var(--gold-bright)] text-xs mt-1.5">{{ form.errors.phone }}</p></div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-7">
+              <div><label class="eyebrow text-[.62rem] block mb-2">Е-пошта</label><input v-model="form.email" class="field" type="email" placeholder="email@пример.com" autocomplete="off"><p v-if="form.errors.email" class="text-[var(--gold-bright)] text-xs mt-1.5">{{ form.errors.email }}</p></div>
               <div><label class="eyebrow text-[.62rem] block mb-2">Тип на настан</label>
-                <select class="field" required>
+                <select v-model="form.event_type" class="field" autocomplete="off" required>
                   <option value="" class="bg-[var(--paper)]">Изберете…</option>
-                  <option v-for="t in c.form.event_types" :key="t" class="bg-[var(--paper)]">{{ t }}</option>
+                  <option v-for="t in c.form.event_types" :key="t" :value="t" class="bg-[var(--paper)]">{{ t }}</option>
                 </select>
+                <p v-if="form.errors.event_type" class="text-[var(--gold-bright)] text-xs mt-1.5">{{ form.errors.event_type }}</p>
               </div>
             </div>
             <div class="grid sm:grid-cols-2 gap-7">
-              <div><label class="eyebrow text-[.62rem] block mb-2">Датум</label><input class="field" type="date"></div>
-              <div><label class="eyebrow text-[.62rem] block mb-2">Број на гости</label><input class="field" type="number" min="1" placeholder="нпр. 120"></div>
+              <div><label class="eyebrow text-[.62rem] block mb-2">Датум</label><input v-model="form.event_date" class="field" type="date" autocomplete="off"></div>
+              <div><label class="eyebrow text-[.62rem] block mb-2">Број на гости</label><input v-model="form.guests" class="field" type="number" min="1" placeholder="нпр. 120" autocomplete="off"></div>
             </div>
-            <div><label class="eyebrow text-[.62rem] block mb-2">Порака</label><textarea class="field" placeholder="Раскажете ни за вашиот настан…"></textarea></div>
-            <button type="submit" class="btn btn-gold w-full sm:w-auto">Испрати порака <span class="arr">→</span></button>
+            <div><label class="eyebrow text-[.62rem] block mb-2">Порака</label><textarea v-model="form.message" class="field" placeholder="Раскажете ни за вашиот настан…" autocomplete="off"></textarea></div>
+            <div class="flex flex-wrap items-center gap-4">
+              <button type="submit" class="btn btn-gold w-full sm:w-auto" :disabled="form.processing">{{ form.processing ? 'Се испраќа…' : 'Испрати порака' }} <span class="arr">→</span></button>
+              <p v-if="sent" class="text-[var(--gold-bright)] text-sm">Пораката е успешно испратена. Ви благодариме!</p>
+            </div>
           </form>
         </div>
 
