@@ -5,6 +5,9 @@
 @source '../**/*.js';
 @source '../**/*.vue';
 
+/* Self-hosted fonts (no third-party requests) */
+@import './fonts.css';
+
 /* VIP Ketering design system — tokens, components, animations */
 @import './site.css';
 

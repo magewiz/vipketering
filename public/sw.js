@@ -1,5 +1,5 @@
 /* VIP Ketering — service worker */
-const CACHE = 'vip-cache-v3';
+const CACHE = 'vip-cache-v4';
 
 self.addEventListener('install', () => self.skipWaiting());
 
@@ -43,7 +43,10 @@ self.addEventListener('fetch', (event) => {
         const cached = await caches.match(req);
         const network = fetch(req).then((res) => {
             if (res && res.status === 200) {
-                caches.open(CACHE).then((c) => c.put(req, res.clone()));
+                // Clone before returning — once the page consumes the body,
+                // a late async clone() throws "Response body is already used".
+                const copy = res.clone();
+                caches.open(CACHE).then((c) => c.put(req, copy));
             }
             return res;
         }).catch(() => cached);

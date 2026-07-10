@@ -10,6 +10,13 @@ const path = computed(() => page.url.split('?')[0].replace(/\/$/, '') || '/');
 const isActive = (p) => path.value === p;
 const alwaysSolid = computed(() => path.value !== '/');
 
+// The nav renders the logo at ~40px — use the small variant for the default
+// logo so we don't ship the 512px file; admin-uploaded logos are used as-is.
+const navLogo = computed(() => {
+    const logo = settings.value.logo || '/img/logo-vip.png';
+    return logo === '/img/logo-vip.png' ? '/img/logo-vip-96.png' : logo;
+});
+
 const scrolled = ref(false);
 const menuOpen = ref(false);
 
@@ -41,7 +48,7 @@ const year = new Date().getFullYear();
     <header class="nav" :class="{ scrolled: scrolled }">
         <div class="maxw px-5 md:px-10 h-[78px] flex items-center justify-between">
             <Link href="/" class="flex items-center gap-3">
-                <span class="logo-badge w-12 h-12 md:w-[52px] md:h-[52px]"><img :src="settings.logo || '/img/logo-vip.png'" :alt="settings.brand_name" class="w-9 md:w-10"></span>
+                <span class="logo-badge w-12 h-12 md:w-[52px] md:h-[52px]"><img :src="navLogo" :alt="settings.brand_name" width="96" height="96" class="w-9 md:w-10 h-auto"></span>
                 <span class="leading-none">
                     <span class="wordmark text-xl md:text-2xl text-cream">{{ settings.brand_name }}</span>
                     <span v-if="settings.tagline" class="block eyebrow text-[.58rem] mt-1" style="letter-spacing:.32em">{{ settings.tagline }}</span>
@@ -63,7 +70,7 @@ const year = new Date().getFullYear();
     <!-- mobile menu -->
     <div class="mobile-menu" :class="{ open: menuOpen }">
         <div class="flex items-center justify-between px-5 h-[78px] border-b border-[var(--line-soft)]">
-            <Link href="/" @click="closeMenu" class="flex items-center gap-3"><span class="logo-badge w-12 h-12 md:w-[52px] md:h-[52px]"><img :src="settings.logo || '/img/logo-vip.png'" :alt="settings.brand_name" class="w-9 md:w-10"></span><span class="leading-none"><span class="wordmark text-xl md:text-2xl text-cream">{{ settings.brand_name }}</span><span v-if="settings.tagline" class="block eyebrow text-[.58rem] mt-1" style="letter-spacing:.32em">{{ settings.tagline }}</span></span></Link>
+            <Link href="/" @click="closeMenu" class="flex items-center gap-3"><span class="logo-badge w-12 h-12 md:w-[52px] md:h-[52px]"><img :src="navLogo" :alt="settings.brand_name" width="96" height="96" class="w-9 md:w-10 h-auto"></span><span class="leading-none"><span class="wordmark text-xl md:text-2xl text-cream">{{ settings.brand_name }}</span><span v-if="settings.tagline" class="block eyebrow text-[.58rem] mt-1" style="letter-spacing:.32em">{{ settings.tagline }}</span></span></Link>
             <button @click="closeMenu" class="w-11 h-11 grid place-items-center rounded-sm border border-[var(--line-soft)] text-3xl leading-none text-[var(--gold-bright)] hover:border-[var(--gold)] transition" aria-label="Затвори">&times;</button>
         </div>
         <nav class="mm-nav flex-1 flex flex-col justify-center px-6">
@@ -92,7 +99,7 @@ const year = new Date().getFullYear();
         <div class="maxw px-5 md:px-10">
             <div class="grid md:grid-cols-12 gap-12 pb-14">
                 <div class="md:col-span-5">
-                    <div class="flex items-center gap-3"><span class="logo-badge w-14 h-14"><img :src="settings.logo || '/img/logo-vip.png'" class="w-11" :alt="settings.brand_name"></span><span class="wordmark text-2xl">{{ settings.brand_name }}</span></div>
+                    <div class="flex items-center gap-3"><span class="logo-badge w-14 h-14"><img :src="navLogo" class="w-11 h-auto" width="96" height="96" loading="lazy" :alt="settings.brand_name"></span><span class="wordmark text-2xl">{{ settings.brand_name }}</span></div>
                     <p class="lead mt-6 max-w-sm">Професионален кетеринг во Скопје. Оставете ние да се погрижиме за сè — а вие уживајте во вашите најубави моменти.</p>
                     <p v-if="settings.tagline" class="italic-accent text-[var(--gold)] text-xl mt-5">{{ settings.tagline }}.</p>
                 </div>

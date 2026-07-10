@@ -16,10 +16,11 @@
     <link rel="apple-touch-icon" href="/img/icon-180.png">
     <link rel="icon" href="/img/icon-192.png">
 
-    {{-- Fonts --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap&subset=cyrillic,cyrillic-ext,latin" rel="stylesheet">
+    {{-- Fonts are self-hosted (see resources/css/fonts.css); preload the faces used above the fold --}}
+    <link rel="preload" href="/fonts/cormorant-500-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/cormorant-500-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/manrope-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/manrope-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @inertiaHead
@@ -29,7 +30,7 @@
 
     {{-- PWA install prompt --}}
     <div id="pwa-install" class="pwa-install" role="dialog" aria-label="Инсталирај апликација" hidden>
-        <span class="pwa-badge"><img src="/img/logo-vip.png" alt="VIP Ketering"></span>
+        <span class="pwa-badge"><img src="/img/logo-vip-96.png" alt="VIP Ketering" width="96" height="96"></span>
         <div class="pwa-text">
             <strong>Инсталирај го VIP Ketering</strong>
             <span>Додај ја апликацијата на почетниот екран за брз пристап.</span>
@@ -76,6 +77,12 @@
         }
 
         window.addEventListener('beforeinstallprompt', function (e) {
+            // Only intercept when our custom banner will actually be shown —
+            // otherwise let the browser handle it (avoids the "banner not
+            // shown" console warning on desktop).
+            if (localStorage.getItem('pwa-dismissed') === '1') return;
+            if (window.matchMedia('(display-mode: standalone)').matches) return;
+            if (!isMobileOrTablet()) return;
             e.preventDefault();
             deferred = e;
             show();
