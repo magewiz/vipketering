@@ -18,12 +18,18 @@ class ImageOptimizer
 
     public const JPEG_QUALITY = 80;
 
-    public const WEBP_QUALITY = 72;
+    public const WEBP_QUALITY = 68;
 
     /** Images at least this wide also get a mobile "@960" variant for srcset. */
     public const VARIANT_THRESHOLD = 1200;
 
     public const VARIANT_WIDTH = 960;
+
+    /**
+     * Mobile variants serve as full-viewport hero backgrounds under gradient
+     * overlays, so they tolerate stronger compression than content images.
+     */
+    public const VARIANT_WEBP_QUALITY = 60;
 
     /**
      * Optimize a single image in place. Returns false for formats we leave
@@ -131,8 +137,11 @@ class ImageOptimizer
         $variant->resizeImage(self::VARIANT_WIDTH, 0, Imagick::FILTER_LANCZOS, 1);
 
         $webp = clone $variant;
+        // Light denoise: photographic grain compresses terribly in WebP and
+        // is invisible at mobile hero sizes under the gradient overlays.
+        $webp->gaussianBlurImage(0, 0.6);
         $webp->setImageFormat('webp');
-        $webp->setImageCompressionQuality(self::WEBP_QUALITY);
+        $webp->setImageCompressionQuality(self::VARIANT_WEBP_QUALITY);
         $webp->writeImage($variantPath.'.webp');
         $webp->clear();
 

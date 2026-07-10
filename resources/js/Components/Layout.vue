@@ -104,13 +104,13 @@ const year = new Date().getFullYear();
                     <p v-if="settings.tagline" class="italic-accent text-[var(--gold)] text-xl mt-5">{{ settings.tagline }}.</p>
                 </div>
                 <div class="md:col-span-3">
-                    <h4 class="eyebrow mb-5">Навигација</h4>
+                    <h2 class="eyebrow mb-5">Навигација</h2>
                     <ul class="space-y-3 text-cream/75">
                         <li v-for="l in nav" :key="l.href"><Link :href="l.href" class="hover:text-[var(--gold-bright)]">{{ l.label }}</Link></li>
                     </ul>
                 </div>
                 <div class="md:col-span-4">
-                    <h4 class="eyebrow mb-5">Контакт</h4>
+                    <h2 class="eyebrow mb-5">Контакт</h2>
                     <ul class="space-y-3 text-cream/75">
                         <li v-if="settings.phone_primary" class="flex items-center gap-3"><span class="ico ico-gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5h3l1.4 4.6-2 1.4a12 12 0 0 0 5.1 5.1l1.4-2 4.6 1.4v3a2 2 0 0 1-2.1 2A16.4 16.4 0 0 1 4.5 5.6a2 2 0 0 1 2-2.1Z"/></svg></span> <a :href="telHref(settings.phone_primary)" class="hover:text-[var(--gold-bright)]">{{ settings.phone_primary }}</a></li>
                         <li v-if="settings.phone_secondary" class="flex items-center gap-3"><span class="ico ico-gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5h3l1.4 4.6-2 1.4a12 12 0 0 0 5.1 5.1l1.4-2 4.6 1.4v3a2 2 0 0 1-2.1 2A16.4 16.4 0 0 1 4.5 5.6a2 2 0 0 1 2-2.1Z"/></svg></span> <a :href="telHref(settings.phone_secondary)" class="hover:text-[var(--gold-bright)]">{{ settings.phone_secondary }}</a></li>
